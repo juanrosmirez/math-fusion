@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-MathFusionApplication<math-fusion>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.tenpo.mathfusion.MathFusionApplication",
+            "projectName": "math-fusion",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
