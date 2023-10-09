@@ -48,13 +48,14 @@ public class RateLimitFilter implements Filter {
         int statusCode = HttpStatus.TOO_MANY_REQUESTS.value();
         String message = "Demasiadas solicitudes. Inténtalo de nuevo más tarde.";
 
-        ErrorResponse errorResponse = new ErrorResponse(statusCode, message);
+        ErrorResponse errorResponse = new ErrorResponse(statusCode, message, "TOO MANY REQUESTS", System.currentTimeMillis());
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(errorResponse);
         
         httpResponse.setContentType("application/json");
+        httpResponse.setCharacterEncoding("UTF-8");
         httpResponse.setStatus(statusCode);
         httpResponse.getWriter().write(jsonResponse);
     }
