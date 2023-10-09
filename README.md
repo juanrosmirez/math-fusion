@@ -155,7 +155,7 @@ Esto es meramente para probar un caso de éxito del percentageType que aplica di
 
 ### Historial de Llamadas
 
-- **Endpoint:** `/api/call-history??page=[PAGE]&size[SIZE]`
+- **Endpoint:** `/api/call-history?page=[PAGE]&size[SIZE]`
 - **Método:** GET
 - **Descripción:** Obtiene el historial de todos los llamados a los endpoints junto con las respuestas en caso de éxito.
 - **Consideraciones:**
