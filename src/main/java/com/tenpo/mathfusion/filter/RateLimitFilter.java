@@ -37,9 +37,8 @@ public class RateLimitFilter implements Filter {
         long resetTime = resetTimes.getOrDefault(ipAddress, currentTime);
 
         if (currentTime >= resetTime) {
-            // El tiempo de reinicio ha pasado, restablecer el contador y tiempo de reinicio
             requestCount.set(0);
-            resetTimes.put(ipAddress, currentTime + 10000); // Reinicio después de 1 minuto
+            resetTimes.put(ipAddress, currentTime + 10000);
         }
 
         return requestCount.incrementAndGet() <= MAX_REQUESTS_PER_MINUTE;
@@ -49,7 +48,7 @@ public class RateLimitFilter implements Filter {
         int statusCode = HttpStatus.TOO_MANY_REQUESTS.value();
         String message = "Demasiadas solicitudes. Inténtalo de nuevo más tarde.";
 
-        ErrorResponse errorResponse = new ErrorResponse(message, statusCode);
+        ErrorResponse errorResponse = new ErrorResponse(statusCode, message);
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         ObjectMapper objectMapper = new ObjectMapper();

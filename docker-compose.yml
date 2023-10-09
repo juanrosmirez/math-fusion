@@ -1,23 +1,27 @@
 version: '3'
+
 services:
   postgres:
     image: postgres:13
+    container_name: postgres
     environment:
-      POSTGRES_DB: math_fusion
+      POSTGRES_DB: math_fusion_db
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
     ports:
-      - "5432:5432" # Mapeo de puertos para acceder a la base de datos
+      - "5432:5432"
+    volumes:
+      - ./src/main/resources/db/migration/V1__init.sql:/docker-entrypoint-initdb.d/V1__init.sql
 
   app:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080" # Mapeo de puertos para acceder a la API
+      - "8080:8080"
     depends_on:
       - postgres
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/math_fusion
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/math_fusion_db
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: admin

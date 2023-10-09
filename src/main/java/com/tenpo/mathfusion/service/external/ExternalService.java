@@ -1,5 +1,6 @@
 package com.tenpo.mathfusion.service.external;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
@@ -9,35 +10,36 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.tenpo.mathfusion.enums.PercentageType;
 import com.tenpo.mathfusion.exception.ExternalServiceException;
+import com.tenpo.mathfusion.service.session.SessionCache;
 
 @Service
 public class ExternalService {
 
     private static final int MAX_RETRY_ATTEMPTS = 3;
     private static final int EXTERNAL_SERVICE_CACHE_DURATION = 1800000;
-    private Double lastPercentageValue;
-    private long lastPercentageValueTimestamp;
+
+    @Autowired
+    private SessionCache sessionCache;
 
     @Retryable(maxAttempts = MAX_RETRY_ATTEMPTS, value = {
-            ExternalServiceException.class }, backoff = @Backoff(delay = 1000)) // Retardo de 1 segundo entre reintentos
+            ExternalServiceException.class }, backoff = @Backoff(delay = 1000))
     public double getPercentage(String percentageType) throws ExternalServiceException {
 
         try {
-
-            if (lastPercentageValue != null
-                    && System.currentTimeMillis() - lastPercentageValueTimestamp <= EXTERNAL_SERVICE_CACHE_DURATION) {
-                return lastPercentageValue;
+            if (sessionCache.getLastPercentageValue() != null
+                    && System.currentTimeMillis() - sessionCache.getLastPercentageValueTimestamp() <= EXTERNAL_SERVICE_CACHE_DURATION) {
+                return sessionCache.getLastPercentageValue();
             }
 
             double percentageValue = callExternalServiceAndGetPercentage(percentageType);
-            lastPercentageValue = percentageValue;
-            lastPercentageValueTimestamp = System.currentTimeMillis();
+            sessionCache.setLastPercentageValue(percentageValue);
+            sessionCache.setLastPercentageValueTimestamp(System.currentTimeMillis());
 
             return percentageValue;
 
         } catch (ExternalServiceException e) {
-            if (lastPercentageValue != null) {
-                return lastPercentageValue;
+            if (sessionCache.getLastPercentageValue() != null) {
+                return sessionCache.getLastPercentageValue();
             } else {
                 throw e;
             }

@@ -19,6 +19,10 @@ import com.tenpo.mathfusion.repository.CallHistoryRepository;
 @RequestMapping("/api/call-history")
 public class CallHistoryController {
 
+    CallHistoryController(CallHistoryRepository callHistoryRepository) {
+        this.callHistoryRepository = callHistoryRepository;
+    }
+
     @Autowired
     private CallHistoryRepository callHistoryRepository;
 

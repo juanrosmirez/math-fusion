@@ -1,12 +1,24 @@
+
 package com.tenpo.mathfusion.dto;
 
 public class ErrorResponse {
+    private int statusCode;
     private String message;
-    private int statusScode;
 
-    public ErrorResponse(String message, int statusScode) {
+    public ErrorResponse() {
+    }
+
+    public ErrorResponse(int statusCode, String message) {
+        this.statusCode = statusCode;
         this.message = message;
-        this.statusScode = statusScode;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
     }
 
     public String getMessage() {
@@ -16,12 +28,4 @@ public class ErrorResponse {
     public void setMessage(String message) {
         this.message = message;
     }
-
-    public int getStatusScode() {
-        return statusScode;
-    }
-
-    public void setStatusScode(int statusScode) {
-        this.statusScode = statusScode;
-    }   
 }

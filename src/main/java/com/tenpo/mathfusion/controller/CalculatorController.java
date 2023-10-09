@@ -26,6 +26,7 @@ public class CalculatorController {
             double result = calculationService.calculateWithPercentage(request.getNumber1(), request.getNumber2(), request.getPercentageType());
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (ExternalServiceException e) {
+            System.out.println("Error en el servicio externo OPA");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -9,6 +9,5 @@ import com.tenpo.mathfusion.model.CallHistory;
 
 @Repository
 public interface CallHistoryRepository extends JpaRepository<CallHistory, Long> {
-    // Método para obtener registros de historial paginados por fecha de timestamp
     Page<CallHistory> findAllByOrderByTimestampDesc(Pageable pageable);
 }

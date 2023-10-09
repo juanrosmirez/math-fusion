@@ -13,7 +13,7 @@ public class RateLimitConfig {
     public FilterRegistrationBean<RateLimitFilter> rateLimitFilter() {
         FilterRegistrationBean<RateLimitFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new RateLimitFilter());
-        registrationBean.addUrlPatterns("/api/*"); // Reemplaza por tus endpoints
+        registrationBean.addUrlPatterns("/api/*");
 
         return registrationBean;
     }

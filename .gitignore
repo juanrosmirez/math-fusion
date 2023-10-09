@@ -1,0 +1,24 @@
+# VS Code
+.vscode/
+
+# Gradle
+build/
+.gradle/
+.gradle.kts/
+!gradle-wrapper.properties
+
+# Spring Boot
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Logs
+logs/
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Dependency directories
+bin/
+lib/

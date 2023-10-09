@@ -1,69 +1,90 @@
 package com.tenpo.mathfusion.filter;
 
-// import org.junit.jupiter.api.Test;
-// import org.mockito.InjectMocks;
-// import org.mockito.Mock;
-// import org.mockito.Mockito;
-// import org.springframework.boot.test.context.SpringBootTest;
-// import org.springframework.http.HttpStatus;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.springframework.mock.web.MockHttpServletResponse;
 
-// import jakarta.servlet.FilterChain;
-// import jakarta.servlet.FilterConfig;
-// import jakarta.servlet.http.HttpServletRequest;
-// import jakarta.servlet.http.HttpServletResponse;
-// import java.util.concurrent.ConcurrentHashMap;
-// import java.util.concurrent.atomic.AtomicInteger;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
-// import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
-// @SpringBootTest
-// public class RateLimitFilterTest {
+public class RateLimitFilterTest {
 
-//     @InjectMocks
-//     private RateLimitFilter rateLimitFilter;
+    @Mock
+    private FilterChain filterChain;
 
-//     @Mock
-//     private FilterChain filterChain;
+    @Mock
+    private ServletRequest servletRequest;
 
-//     @Mock
-//     private HttpServletRequest request;
+    @Mock
+    private ServletResponse servletResponse;
 
-//     @Mock
-//     private HttpServletResponse response;
+    @Mock
+    private HttpServletResponse httpServletResponse;
 
-//     @Test
-//     public void testDoFilter_AllowRequest() throws Exception {
-//         // Configurar el filtro y las solicitudes
-//         rateLimitFilter.init(Mockito.mock(FilterConfig.class));
-//         rateLimitFilter.setRequestCounts(new ConcurrentHashMap<>());
-//         rateLimitFilter.setResetTimes(new ConcurrentHashMap<>());
+    @InjectMocks
+    private RateLimitFilter rateLimitFilter;
 
-//         when(request.getRemoteAddr()).thenReturn("127.0.0.1");
-//         when(filterChain).thenReturn(Mockito.mock(FilterChain.class));
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
 
-//         // Ejecutar el filtro
-//         rateLimitFilter.doFilter(request, response, filterChain);
+    @Test
+    public void testDoFilterAllowed() throws Exception {
+        String ipAddress = "127.0.0.1";
+        AtomicInteger requestCount = new AtomicInteger(2);
 
-//         // Verificar que el filtro permita la solicitud
-//         Mockito.verify(filterChain).doFilter(request, response);
-//     }
+        ConcurrentHashMap<String, AtomicInteger> requestCounts = new ConcurrentHashMap<>();
+        requestCounts.put(ipAddress, requestCount);
 
-//     @Test
-//     public void testDoFilter_RateLimitExceeded() throws Exception {
-//         // Configurar el filtro y las solicitudes
-//         rateLimitFilter.init(Mockito.mock(FilterConfig.class));
-//         ConcurrentHashMap<String, AtomicInteger> requestCounts = new ConcurrentHashMap<>();
-//         requestCounts.put("127.0.0.1", new AtomicInteger(RateLimitFilter.MAX_REQUESTS_PER_MINUTE));
-//         rateLimitFilter.setRequestCounts(requestCounts);
-//         rateLimitFilter.setResetTimes(new ConcurrentHashMap<>());
+        rateLimitFilter.setRequestCounts(requestCounts);
 
-//         when(request.getRemoteAddr()).thenReturn("127.0.0.1");
-//         when(response.getWriter()).thenReturn(Mockito.mock(java.io.PrintWriter.class));
+        when(servletRequest.getRemoteAddr()).thenReturn(ipAddress);
 
-//         // Ejecutar el filtro
-//         rateLimitFilter.doFilter(request, response, filterChain);
+        rateLimitFilter.doFilter(servletRequest, servletResponse, filterChain);
 
-//         // Verificar que el filtro responda con un estado de demasiadas solicitudes
-//         Mockito.verify(response).setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
-//     }
-// }
+        verify(filterChain, times(1)).doFilter(servletRequest, servletResponse);
+    }
+
+    @Test
+    public void testDoFilterRateLimitExceeded() throws Exception {
+        String ipAddress = "127.0.0.1";
+        AtomicInteger requestCount = new AtomicInteger(4);
+
+        ConcurrentHashMap<String, AtomicInteger> requestCounts = new ConcurrentHashMap<>();
+        requestCounts.put(ipAddress, requestCount);
+
+        rateLimitFilter.setRequestCounts(requestCounts);
+
+        when(servletRequest.getRemoteAddr()).thenReturn(ipAddress);
+
+        HttpServletResponse realHttpServletResponse = new MockHttpServletResponse();
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(servletResponse.getWriter()).thenReturn(writer);
+
+        rateLimitFilter.doFilter(servletRequest, realHttpServletResponse, filterChain);
+        rateLimitFilter.doFilter(servletRequest, realHttpServletResponse, filterChain);
+        rateLimitFilter.doFilter(servletRequest, realHttpServletResponse, filterChain);
+        rateLimitFilter.doFilter(servletRequest, realHttpServletResponse, filterChain);
+
+        when(servletResponse.getContentType()).thenReturn("application/json");
+        assertEquals(429, realHttpServletResponse.getStatus());
+
+        Mockito.verify(filterChain, Mockito.never()).doFilter(servletRequest, servletResponse);
+    }
+}

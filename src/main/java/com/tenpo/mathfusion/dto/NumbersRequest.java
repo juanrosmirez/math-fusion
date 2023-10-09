@@ -5,24 +5,20 @@ public class NumbersRequest {
     private double number2;
     private String percentageType;
 
-    // Constructor vacío (necesario para Spring Boot)
     public NumbersRequest() {
     }
 
-    // Constructor con parámetros
     public NumbersRequest(double number1, double number2) {
         this.number1 = number1;
         this.number2 = number2;
     }
 
-    // Constructor con parámetros
     public NumbersRequest(double number1, double number2, String percentageType) {
         this.number1 = number1;
         this.number2 = number2;
         this.percentageType = percentageType;
     }
 
-    // Getters y setters
     public double getNumber1() {
         return number1;
     }

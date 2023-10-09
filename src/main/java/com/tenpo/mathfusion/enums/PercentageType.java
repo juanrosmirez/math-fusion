@@ -1,5 +1,7 @@
 package com.tenpo.mathfusion.enums;
 
+import com.tenpo.mathfusion.exception.ExternalServiceException;
+
 public enum PercentageType {
     HIGH(100.0),
     MEDIUM(50.0),
@@ -15,7 +17,7 @@ public enum PercentageType {
         return value;
     }
 
-    public static PercentageType fromString(String input) {
+    public static PercentageType fromString(String input) throws ExternalServiceException {
         switch (input.toUpperCase()) {
             case "HIGH":
                 return HIGH;
@@ -24,7 +26,7 @@ public enum PercentageType {
             case "LOW":
                 return LOW;
             default:
-                throw new IllegalArgumentException("La entrada debe ser 'HIGH', 'MEDIUM' o 'LOW'");
+                throw new ExternalServiceException("La entrada debe ser 'HIGH', 'MEDIUM' o 'LOW'");
         }
     }
 }

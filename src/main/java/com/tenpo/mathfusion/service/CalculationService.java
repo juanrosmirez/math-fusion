@@ -36,7 +36,6 @@ public class CalculationService {
     }
 
     private double performCalculation(double number1, double number2, double externalServiceValue) {
-        // Realiza la operación y devuelve el resultado
         return number1 + number2 + (number1 + number2) * (externalServiceValue / 100.0);
     }
 }

@@ -17,8 +17,6 @@ public class CallHistory {
     private double number2;
     private double result;
 
-    // Getters y setters
-
     public Long getId() {
         return id;
     }

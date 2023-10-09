@@ -1,5 +1,3 @@
--- CREATE DATABASE order_managment;
-
 CREATE TABLE call_history (
     id serial PRIMARY KEY,
     timestamp timestamp NOT NULL,
