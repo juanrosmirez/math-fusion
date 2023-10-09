@@ -1,6 +1,6 @@
 # math-fusion
 
-API de Spring Boot para cálculos de números en tiempo real, limitación de velocidad y manejo de errores, con soporte para Docker, base de datos con migraciones en postgresql y documentación Swagger.
+API de Spring Boot para cálculos de números en tiempo real, limitación de velocidad y manejo de errores, con soporte para Docker, base de datos con migraciones en postgresql, cache, retries y documentación Swagger.
 
 
 ## Requerimientos
