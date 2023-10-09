@@ -107,7 +107,7 @@ La documentación de la API está disponible en http://localhost:8080/swagger-ui
 ### CASUÍSTICAS
 
 1. Con `percentageType` incorrecto (por ejemplo, `INCORRECT_PERCENTAGE_TYPE`) genera un error en el servicio externo y hace 3 retries, pero como no tiene un ultimo valor almacenado arroja error:
-```
+```json
 {
   "number1": 8,
   "number2": 12,
@@ -124,8 +124,7 @@ La documentación de la API está disponible en http://localhost:8080/swagger-ui
 ```
 
 3. Con `percentageType` incorrecto (por ejemplo, `INCORRECT_PERCENTAGE_TYPE`) para forzar el error en el servicio externo y ver como funciona la cache implementada por sesión, como la ejecucción del paso anterior fue correcta, hay un valor en la cache por 30 minutos y lo devuelve:
-```
-
+```json
 {
   "number1": 8,
   "number2": 12,
@@ -139,7 +138,7 @@ Esto es meramente para probar un caso de éxito del percentageType que aplica di
 - `MEDIUM: 50%`
 - `LOW: 10%`
 - sin `percentageType` por default es `LOW:10%`
-```
+```json
 {
   "number1": 15,
   "number2": 25,
